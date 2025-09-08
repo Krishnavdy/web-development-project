@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Reality Check</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .date {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 25px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 1.5em;
+        }
+
+        .question-group {
+            margin-bottom: 20px;
+        }
+
+        .question {
+            margin-bottom: 15px;
+        }
+
+        .question label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        .rating {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .rating input[type="radio"] {
+            display: none;
+        }
+
+        .rating label {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            border: 2px solid transparent;
+        }
+
+        .rating label:nth-child(2) { background: #ff4757; color: white; }
+        .rating label:nth-child(4) { background: #ff6b47; color: white; }
+        .rating label:nth-child(6) { background: #ffa502; color: white; }
+        .rating label:nth-child(8) { background: #2ed573; color: white; }
+        .rating label:nth-child(10) { background: #1e90ff; color: white; }
+
+        .rating input[type="radio"]:checked + label {
+            transform: scale(1.1);
+            border-color: #333;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            resize: vertical;
+            min-height: 80px;
+            font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .results {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            border-radius: 15px;
+            color: #333;
+        }
+
+        .results h3 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .overall-score {
+            font-size: 2em;
+            font-weight: bold;
+            text-align: center;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+        }
+
+        .insight {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Daily Reality Check</h1>
+            <div class="date" id="currentDate"></div>
+        </div>
+
+        <div class="content">
+            <form id="dailyForm">
+                <div class="section">
+                    <h3><span class="icon">💪</span> Physical Wellness</h3>
+                    <div class="question-group">
+                        <div class="question">
+                            <label>How well did you sleep last night?</label>
+                            <div class="rating">
+                                <input type="radio" name="sleep" value="1" id="sleep1">
+                                <label for="sleep1">1</label>
+                                <input type="radio" name="sleep" value="2" id="sleep2">
+                                <label for="sleep2">2</label>
+                                <input type="radio" name="sleep" value="3" id="sleep3">
+                                <label for="sleep3">3</label>
+                                <input type="radio" name="sleep" value="4" id="sleep4">
+                                <label for="sleep4">4</label>
+                                <input type="radio" name="sleep" value="5" id="sleep5">
+                                <label for="sleep5">5</label>
+                            </div>
+                        </div>
+                        <div class="question">
+                            <label>How active were you today?</label>
+                            <div class="rating">
+                                <input type="radio" name="exercise" value="1" id="exercise1">
+                                <label for="exercise1">1</label>
+                                <input type="radio" name="exercise" value="2" id="exercise2">
+                                <label for="exercise2">2</label>
+                                <input type="radio" name="exercise" value="3" id="exercise3">
+                                <label for="exercise3">3</label>
+                                <input type="radio" name="exercise" value="4" id="exercise4">
+                                <label for="exercise4">4</label>
+                                <input type="radio" name="exercise" value="5" id="exercise5">
+                                <label for="exercise5">5</label>
+                            </div>
+                        </div>
+                        <div class="question">
+                            <label>How well did you eat today?</label>
+                            <div class="rating">
+                                <input type="radio" name="nutrition" value="1" id="nutrition1">
+                                <label for="nutrition1">1</label>
+                                <input type="radio" name="nutrition" value="2" id="nutrition2">
+                                <label for="nutrition2">2</label>
+                                <input type="radio" name="nutrition" value="3" id="nutrition3">
+                                <label for="nutrition3">3</label>
+                                <input type="radio" name="nutrition" value="4" id="nutrition4">
+                                <label for="nutrition4">4</label>
+                                <input type="radio" name="nutrition" value="5" id="nutrition5">
+                                <label for="nutrition5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3><span class="icon">🧠</span> Mental & Emotional</h3>
+                    <div class="question-group">
+                        <div class="question">
+                            <label>How was your overall mood today?</label>
+                            <div class="rating">
+                                <input type="radio" name="mood" value="1" id="mood1">
+                                <label for="mood1">1</label>
+                                <input type="radio" name="mood" value="2" id="mood2">
+                                <label for="mood2">2</label>
+                                <input type="radio" name="mood" value="3" id="mood3">
+                                <label for="mood3">3</label>
+                                <input type="radio" name="mood" value="4" id="mood4">
+                                <label for="mood4">4</label>
+                                <input type="radio" name="mood" value="5" id="mood5">
+                                <label for="mood5">5</label>
+                            </div>
+                        </div>
+                        <div class="question">
+                            <label>How stressed did you feel today?</label>
+                            <div class="rating">
+                                <input type="radio" name="stress" value="5" id="stress1">
+                                <label for="stress1">1</label>
+                                <input type="radio" name="stress" value="4" id="stress2">
+                                <label for="stress2">2</label>
+                                <input type="radio" name="stress" value="3" id="stress3">
+                                <label for="stress3">3</label>
+                                <input type="radio" name="stress" value="2" id="stress4">
+                                <label for="stress4">4</label>
+                                <input type="radio" name="stress" value="1" id="stress5">
+                                <label for="stress5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3><span class="icon">🎯</span> Productivity & Goals</h3>
+                    <div class="question-group">
+                        <div class="question">
+                            <label>How productive were you today?</label>
+                            <div class="rating">
+                                <input type="radio" name="productivity" value="1" id="productivity1">
+                                <label for="productivity1">1</label>
+                                <input type="radio" name="productivity" value="2" id="productivity2">
+                                <label for="productivity2">2</label>
+                                <input type="radio" name="productivity" value="3" id="productivity3">
+                                <label for="productivity3">3</label>
+                                <input type="radio" name="productivity" value="4" id="productivity4">
+                                <label for="productivity4">4</label>
+                                <input type="radio" name="productivity" value="5" id="productivity5">
+                                <label for="productivity5">5</label>
+                            </div>
+                        </div>
+                        <div class="question">
+                            <label>Did you work towards your goals today?</label>
+                            <div class="rating">
+                                <input type="radio" name="goals" value="1" id="goals1">
+                                <label for="goals1">1</label>
+                                <input type="radio" name="goals" value="2" id="goals2">
+                                <label for="goals2">2</label>
+                                <input type="radio" name="goals" value="3" id="goals3">
+                                <label for="goals3">3</label>
+                                <input type="radio" name="goals" value="4" id="goals4">
+                                <label for="goals4">4</label>
+                                <input type="radio" name="goals" value="5" id="goals5">
+                                <label for="goals5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3><span class="icon">🤝</span> Relationships & Social</h3>
+                    <div class="question-group">
+                        <div class="question">
+                            <label>How connected did you feel with others today?</label>
+                            <div class="rating">
+                                <input type="radio" name="social" value="1" id="social1">
+                                <label for="social1">1</label>
+                                <input type="radio" name="social" value="2" id="social2">
+                                <label for="social2">2</label>
+                                <input type="radio" name="social" value="3" id="social3">
+                                <label for="social3">3</label>
+                                <input type="radio" name="social" value="4" id="social4">
+                                <label for="social4">4</label>
+                                <input type="radio" name="social" value="5" id="social5">
+                                <label for="social5">5</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section">
+                    <h3><span class="icon">📝</span> Reflection</h3>
+                    <div class="question-group">
+                        <div class="question">
+                            <label>What was the best part of your day?</label>
+                            <textarea name="bestPart" placeholder="Describe what made you feel good today..."></textarea>
+                        </div>
+                        <div class="question">
+                            <label>What could you improve tomorrow?</label>
+                            <textarea name="improvements" placeholder="What would you like to do differently?"></textarea>
+                        </div>
+                        <div class="question">
+                            <label>Any additional thoughts or observations?</label>
+                            <textarea name="thoughts" placeholder="Anything else on your mind..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Get My Reality Check</button>
+            </form>
+
+            <div class="results" id="results">
+                <h3>📊 Your Daily Reality Check</h3>
+                <div id="scoreBreakdown"></div>
+                <div class="overall-score" id="overallScore"></div>
+                <div class="insight" id="insight"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Handle form submission
+        document.getElementById('dailyForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            var scores = {};
+            var reflections = {};
+            
+            // Calculate scores using traditional method for better compatibility
+            var categories = ['sleep', 'exercise', 'nutrition', 'mood', 'stress', 'productivity', 'goals', 'social'];
+            var totalScore = 0;
+            var categoryCount = 0;
+            
+            for (var i = 0; i < categories.length; i++) {
+                var category = categories[i];
+                var checkedInput = document.querySelector('input[name="' + category + '"]:checked');
+                if (checkedInput) {
+                    var value = parseInt(checkedInput.value);
+                    scores[category] = value;
+                    totalScore += value;
+                    categoryCount++;
+                }
+            }
+            
+            // Get reflections
+            reflections.bestPart = document.querySelector('textarea[name="bestPart"]').value || '';
+            reflections.improvements = document.querySelector('textarea[name="improvements"]').value || '';
+            reflections.thoughts = document.querySelector('textarea[name="thoughts"]').value || '';
+            
+            // Ensure we have at least one score to calculate average
+            var averageScore = categoryCount > 0 ? Math.round((totalScore / categoryCount) * 10) / 10 : 0;
+            // Find this existing line in your 'submit' event listener:
+var averageScore = categoryCount > 0 ? Math.round((totalScore / categoryCount) * 10) / 10 : 0;
+
+// ADD THIS NEW CODE BLOCK RIGHT AFTER IT:
+// =======================================================
+// NEW: Prepare data for saving
+const today = new Date().toISOString().split('T')[0]; // Gets date as "YYYY-MM-DD"
+
+const dataToSave = {
+    date: today,
+    scores: scores,
+    reflections: reflections,
+    averageScore: averageScore
+};
+
+// NEW: Save to localStorage as a JSON string
+localStorage.setItem('dailyCheckData', JSON.stringify(dataToSave));
+// =======================================================
+
+// This existing line should come right after the new block
+displayResults(scores, averageScore, reflections, categoryCount);
+
+            // Display results
+            displayResults(scores, averageScore, reflections, categoryCount);
+        });
+        
+        function displayResults(scores, averageScore, reflections, categoryCount) {
+            var resultsDiv = document.getElementById('results');
+            var scoreBreakdown = document.getElementById('scoreBreakdown');
+            var overallScore = document.getElementById('overallScore');
+            var insight = document.getElementById('insight');
+            
+            // Check if any ratings were provided
+            if (categoryCount === 0) {
+                scoreBreakdown.innerHTML = '<p style="text-align: center; font-style: italic;">Please rate at least one category to see your results!</p>';
+                overallScore.innerHTML = 'Complete some ratings above ⬆️';
+                insight.innerHTML = 'Rate how you feel in the different areas of your life to get personalized insights!';
+                resultsDiv.style.display = 'block';
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+                return;
+            }
+            
+            // Category labels
+            var categoryLabels = {
+                sleep: '😴 Sleep Quality',
+                exercise: '🏃‍♂️ Physical Activity',
+                nutrition: '🥗 Nutrition',
+                mood: '😊 Mood',
+                stress: '😌 Stress Management',
+                productivity: '⚡ Productivity',
+                goals: '🎯 Goal Progress',
+                social: '👥 Social Connection'
+            };
+            
+            // Create score breakdown
+            var breakdownHTML = '';
+            for (var category in scores) {
+                if (scores.hasOwnProperty(category)) {
+                    var score = scores[category];
+                    var percentage = (score / 5) * 100;
+                    breakdownHTML += '<div class="score-item">' +
+                        '<span>' + categoryLabels[category] + '</span>' +
+                        '<span>' + score + '/5 (' + percentage + '%)</span>' +
+                        '</div>';
+                }
+            }
+            
+            scoreBreakdown.innerHTML = breakdownHTML;
+            overallScore.innerHTML = 'Overall Score: ' + averageScore + '/5.0';
+            
+            // Generate insight based on scores
+            var insightText = generateInsight(averageScore, scores, reflections);
+            insight.innerHTML = insightText;
+            
+            // Show results with animation
+            resultsDiv.style.display = 'block';
+            if (resultsDiv.scrollIntoView) {
+                resultsDiv.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                resultsDiv.scrollIntoView();
+            }
+        }
+        
+        function generateInsight(averageScore, scores, reflections) {
+            var insight = '';
+            
+            if (averageScore >= 4.5) {
+                insight = "🌟 Outstanding day! You're firing on all cylinders. Keep up this momentum!";
+            } else if (averageScore >= 4.0) {
+                insight = "✨ Great day overall! You're doing well across most areas. Small tweaks can make it even better.";
+            } else if (averageScore >= 3.5) {
+                insight = "👍 Solid day with room for improvement. Focus on the areas where you scored lower.";
+            } else if (averageScore >= 3.0) {
+                insight = "💪 Mixed day - some wins and some challenges. Tomorrow is a fresh start!";
+            } else if (averageScore >= 2.5) {
+                insight = "🤔 Tough day, but you're being honest with yourself. That's the first step to improvement.";
+            } else {
+                insight = "🌱 Challenging day, but remember - every day is a new opportunity. Be kind to yourself.";
+            }
+            
+            // Add specific recommendations based on lowest scores
+            var sortedScores = [];
+            for (var category in scores) {
+                if (scores.hasOwnProperty(category)) {
+                    sortedScores.push([category, scores[category]]);
+                }
+            }
+            sortedScores.sort(function(a, b) { return a[1] - b[1]; });
+            
+            if (sortedScores.length > 0) {
+                var lowestArea = sortedScores[0][0];
+                var recommendations = {
+                    sleep: "Consider a consistent bedtime routine or limiting screen time before bed.",
+                    exercise: "Even a 10-minute walk can boost your energy and mood tomorrow.",
+                    nutrition: "Plan a healthy meal or snack for tomorrow to fuel your body better.",
+                    mood: "Practice gratitude or do something you enjoy tomorrow.",
+                    stress: "Try deep breathing, meditation, or talking to someone about what's bothering you.",
+                    productivity: "Break big tasks into smaller chunks and celebrate small wins.",
+                    goals: "Set one small, achievable goal for tomorrow to build momentum.",
+                    social: "Reach out to a friend or family member - connection matters."
+                };
+                
+                if (scores[lowestArea] <= 2) {
+                    insight += '<br><br>💡 Focus area: ' + recommendations[lowestArea];
+                }
+            }
+            
+            return insight;
+        }
+  // PASTE THIS ENTIRE BLOCK AT THE END OF YOUR SCRIPT
+// =======================================================
+/**
+ * NEW: Loads data from localStorage if it exists for the current day.
+ */
+function loadDataForToday() {
+    const savedDataJSON = localStorage.getItem('dailyCheckData');
+    if (!savedDataJSON) {
+        return; // Exit if no data is saved
+    }
+
+    const savedData = JSON.parse(savedDataJSON);
+    const today = new Date().toISOString().split('T')[0];
+
+    // Only load the data if it was saved today
+    if (savedData.date === today) {
+        console.log("Found data for today. Loading...");
+
+        // Repopulate the rating radio buttons
+        for (const category in savedData.scores) {
+            const value = savedData.scores[category];
+            const radioInput = document.querySelector(`input[name="${category}"][value="${value}"]`);
+            if (radioInput) {
+                radioInput.checked = true;
+            }
+        }
+
+        // Repopulate the textareas
+        document.querySelector('textarea[name="bestPart"]').value = savedData.reflections.bestPart;
+        document.querySelector('textarea[name="improvements"]').value = savedData.reflections.improvements;
+        document.querySelector('textarea[name="thoughts"]').value = savedData.reflections.thoughts;
+
+        // Display the saved results
+        const categoryCount = Object.keys(savedData.scores).length;
+        displayResults(savedData.scores, savedData.averageScore, savedData.reflections, categoryCount);
+    }
+}
+
+// NEW: Run the load function as soon as the page content is ready.
+document.addEventListener('DOMContentLoaded', loadDataForToday);
+// =======================================================
+
+    </script>
+</body>
+</html>
